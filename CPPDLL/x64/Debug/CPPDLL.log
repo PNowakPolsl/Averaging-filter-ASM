@@ -1,0 +1,6 @@
+﻿  pch.cpp
+  avgfilter.cpp
+  dllmain.cpp
+  Generowanie kodu...
+mydll.def : error LNK2001: nierozpoznany symbol zewnętrzny nazwa
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\JA PROJ\JAPROJ\x64\Debug\CPPDLL.lib : fatal error LNK1120: liczba nierozpoznanych elementów zewnętrznych: 1
