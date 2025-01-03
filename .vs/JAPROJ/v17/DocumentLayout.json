@@ -1,0 +1,36 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\nowak\\Averaging-filter-ASM\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{59CEBC8F-E2B7-408E-8570-5618546BC6CC}|JAPROJ\\JAPROJ.csproj|c:\\users\\nowak\\averaging-filter-asm\\japroj\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{59CEBC8F-E2B7-408E-8570-5618546BC6CC}|JAPROJ\\JAPROJ.csproj|solutionrelative:japroj\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\nowak\\Averaging-filter-ASM\\JAPROJ\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "JAPROJ\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\nowak\\Averaging-filter-ASM\\JAPROJ\\MainWindow.xaml",
+              "RelativeToolTip": "JAPROJ\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-01-03T11:50:55.249Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
