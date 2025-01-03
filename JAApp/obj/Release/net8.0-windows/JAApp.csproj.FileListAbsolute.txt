@@ -1,0 +1,61 @@
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\bin\Release\net8.0-windows\JAApp.exe
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\bin\Release\net8.0-windows\JAApp.deps.json
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\bin\Release\net8.0-windows\JAApp.runtimeconfig.json
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\bin\Release\net8.0-windows\JAApp.dll
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\bin\Release\net8.0-windows\JAApp.pdb
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\MainWindow.baml
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\MainWindow.g.cs
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\App.g.cs
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp_MarkupCompile.cache
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.g.resources
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.AssemblyInfoInputs.cache
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.AssemblyInfo.cs
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.csproj.CoreCompileInputs.cache
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.sourcelink.json
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.dll
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\refint\JAApp.dll
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.pdb
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\JAApp.genruntimeconfig.cache
+C:\Users\Sorrg\Source\Repos\Sorrger\SquareFilter\JAApp\obj\Release\net8.0-windows\ref\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.exe
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.deps.json
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.runtimeconfig.json
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.pdb
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\MainWindow.baml
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\MainWindow.g.cs
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\App.g.cs
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp_MarkupCompile.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.g.resources
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.AssemblyInfoInputs.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.AssemblyInfo.cs
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.csproj.CoreCompileInputs.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.sourcelink.json
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\refint\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.pdb
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.genruntimeconfig.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\ref\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Dejwu\Cheers\JAApp\obj\Release\net8.0-windows\JAApp_MarkupCompile.lref
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.exe
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.deps.json
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.runtimeconfig.json
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\bin\Release\net8.0-windows\JAApp.pdb
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\MainWindow.g.cs
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\App.g.cs
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp_MarkupCompile.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp_MarkupCompile.lref
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\MainWindow.baml
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.g.resources
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.AssemblyInfoInputs.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.AssemblyInfo.cs
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.csproj.CoreCompileInputs.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\refint\JAApp.dll
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.pdb
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\JAApp.genruntimeconfig.cache
+C:\Users\nowak\OneDrive\Pulpit\Piotrek STUDIA\SEMESTR 5\Projekcik\Cheers\JAApp\obj\Release\net8.0-windows\ref\JAApp.dll
