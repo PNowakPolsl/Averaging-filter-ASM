@@ -10,7 +10,6 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using System.Windows.Controls;
 
-
 namespace JAPROJ
 {
     public partial class MainWindow : Window
@@ -21,7 +20,7 @@ namespace JAPROJ
         public static extern void AVGFILTER(IntPtr pixelData, IntPtr outputData, int width, int startY, int endY, int imageHeight);
 
         [DllImport("JADll.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern int MyProc1(int a, int b);
+        public static extern void ASM_AVGFILTER(IntPtr pixelData, IntPtr outputData, int width, int startY, int endY, int imageHeight);
 
         private BitmapSource originalBitmap;
         private BitmapSource filteredBitmap;
@@ -29,7 +28,6 @@ namespace JAPROJ
         public MainWindow()
         {
             InitializeComponent();
-            
         }
 
         private void OnLoadImageClick(object sender, RoutedEventArgs e)
@@ -55,7 +53,15 @@ namespace JAPROJ
 
             if (int.TryParse((ThreadCount.SelectedItem as ComboBoxItem)?.Content.ToString(), out int numThreads) && numThreads > 0)
             {
-                ApplyFilter(numThreads);
+                // Sprawdź, czy użytkownik wybrał ASM lub C++
+                string selectedLanguage = (LanguageSelection.SelectedItem as ComboBoxItem)?.Content.ToString();
+                if (string.IsNullOrEmpty(selectedLanguage))
+                {
+                    MessageBox.Show("Proszę wybrać język przetwarzania.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                ApplyFilter(numThreads, selectedLanguage);
             }
             else
             {
@@ -63,7 +69,7 @@ namespace JAPROJ
             }
         }
 
-        private void ApplyFilter(int numThreads)
+        private void ApplyFilter(int numThreads, string language)
         {
             int width = loadedBitmap.PixelWidth;
             int height = loadedBitmap.PixelHeight;
@@ -93,12 +99,20 @@ namespace JAPROJ
 
             Stopwatch stopwatch = Stopwatch.StartNew();
 
+            // Przetwarzanie obrazu w zależności od wybranego języka
             Parallel.For(0, numThreads, i =>
             {
                 int startY = i * segmentHeight;
                 int endY = startY + segmentHeight + (i == numThreads - 1 ? extraRows : 0);
 
-                AVGFILTER(pixelPtr, outputPtr, width, startY, endY, height);
+                if (language == "C++")
+                {
+                    AVGFILTER(pixelPtr, outputPtr, width, startY, endY, height);
+                }
+                else if (language == "ASM")
+                {
+                    ASM_AVGFILTER(pixelPtr, outputPtr, width, startY, endY, height);
+                }
             });
 
             stopwatch.Stop();
@@ -118,7 +132,7 @@ namespace JAPROJ
 
             SaveFilteredImage(filteredBitmap);
 
-            MessageBox.Show($"Czas przetwarzania: {stopwatch.ElapsedMilliseconds} ms\nObraz zapisano do folderu Pobrane.",
+            MessageBox.Show($"Czas przetwarzania ({language}): {stopwatch.ElapsedMilliseconds} ms\nObraz zapisano do folderu Pobrane.",
                             "Przetwarzanie zakończone", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
