@@ -1,13 +1,14 @@
 .DATA
     align 16
+const_0_111  dd 0.11111111, 0.11111111, 0.11111111, 0.11111111  ; Wektor zawieraj¹cy [1/9, 1/9, 1/9, 1/9]
 
 .CODE
 PUBLIC ASM_AVGFILTER
 ASM_AVGFILTER PROC
-    ; Zachowanie rejestrów nieulotnych
+    ;-----------------------------------
+    ; Zapisanie rejestrów nieulotnych
+    ;-----------------------------------
     push    rbp
-    mov     rbp, rsp
-
     push    rbx
     push    rsi
     push    rdi
@@ -16,72 +17,126 @@ ASM_AVGFILTER PROC
     push    r14
     push    r15
 
-    ; Przypisanie argumentów do rejestrów lokalnych
-    mov     rbx, rdx           ; rbx = outputData
-    mov     r12d, r8d          ; r12d = width
-    mov     r13d, r9d          ; r13d = startY
+    ;-----------------------------------
+    ; Pobranie parametrów funkcji
+    ;-----------------------------------
+    mov     r10d, [rsp + 104]   ; r10d = wysokoœæ obrazu (imageHeight)
+    mov     r12d, r8d           ; r12d = startowy wiersz (startY)
+    mov     r13d, edx           ; r13d = szerokoœæ obrazu (width)
+    mov     rbp, rcx            ; rbp = wskaŸnik na dane pikseli (pixelData)
+    mov     r9d, r9d            ; r9d = koñcowy wiersz (endY)
 
-    ; Pobierz endY i imageHeight z odpowiednich offsetów
-    ; W x64 Windows, po pushe rejestrów, offsety argumentów na stosie to [rbp + 40] i [rbp + 48]
-    mov     eax, dword ptr [rbp + 40]    ; Pobierz endY
-    mov     r14d, eax
-
-    mov     eax, dword ptr [rbp + 48]    ; Pobierz imageHeight
-    mov     r15d, eax
-
-    ; Oblicz stride (szerokoœæ w bajtach)
-    mov     ecx, r12d
-    imul    ecx, 3              ; 3 bajty na piksel (RGB)
-    mov     rsi, rcx            ; rsi = stride
-
-    ; Iteracja przez wiersze obrazu
+    ;-----------------------------------
+    ; Iteracja po wierszach obrazu
+    ;-----------------------------------
 row_loop:
-    cmp     r13d, r14d
-    jge     end_function        ; Przerwij, jeœli osi¹gniêto koniec zakresu wierszy
+    cmp     r12d, r9d
+    jge     end_function        ; Jeœli y >= endY, zakoñcz
 
-    ; SprawdŸ, czy y jest w granicach obrazu
-    cmp     r13d, r15d
-    jge     skip_row
-    cmp     r13d, 0
-    jl      skip_row
+    xor     r14d, r14d         ; Ustaw x na 0
 
-    ; Oblicz wskaŸnik do pocz¹tku aktualnego wiersza w outputData
-    mov     eax, r13d
-    imul    eax, esi            ; eax = y * stride
-    lea     rdi, [rbx + rax]    ; rdi = outputData + y * stride
-
-    ; Iteracja przez kolumny obrazu
-    xor     r10d, r10d          ; r10d = x (0)
 col_loop:
-    cmp     r10d, r12d
-    jge     next_row            ; PrzejdŸ do nastêpnego wiersza, jeœli wszystkie kolumny zosta³y przetworzone
+    cmp     r14d, r13d
+    jge     next_row           ; Jeœli x >= width, przejdŸ do nastêpnego wiersza
 
-    ; Oblicz wskaŸnik do aktualnego piksela
-    ; Oblicz x * 3 jako x * 2 + x
-    mov     eax, r10d
-    shl     eax, 1              ; eax = x * 2
-    add     eax, r10d           ; eax = x * 3
-    lea     rcx, [rdi + rax]    ; rcx = outputData + y * stride + x * 3
+    ; Wyzerowanie akumulatora w xmm0
+    pxor    xmm0, xmm0         ; Reset akumulatora sumy pikseli
 
-    ; Ustaw piksel na bia³y
-    mov     byte ptr [rcx], 255     ; R
-    mov     byte ptr [rcx + 1], 255 ; G
-    mov     byte ptr [rcx + 2], 255 ; B
+    ;---------------------------------------
+    ; Pêtla 3x3: sumowanie pikseli s¹siednich
+    ;---------------------------------------
+    mov     r15d, -1           ; r15d = przesuniêcie w pionie (od aktualnego wiersza)
 
-    ; PrzejdŸ do nastêpnej kolumny
-    inc     r10d
-    jmp     col_loop
+outer_3x3_loop:
+    ; Sprawdzenie, czy wiersz mieœci siê w granicach obrazu
+    mov     edx, r12d
+    add     edx, r15d
+    cmp     edx, 0
+    jl      skip_row
+    cmp     edx, r10d
+    jge     skip_row
+
+    ; Inicjalizacja przesuniêcia w poziomie
+    mov     r8d, -1
+
+inner_3x3_loop:
+    ; Sprawdzenie, czy kolumna mieœci siê w granicach obrazu
+    mov     eax, r14d
+    add     eax, r8d
+    cmp     eax, 0
+    jl      skip_col
+    cmp     eax, r13d
+    jge     skip_col
+
+    ; Obliczenie adresu danego piksela
+    ; rowIndex = (y + r15d) * szerokoœæ
+    ; colIndex = (x + r8d)
+    ; offset   = (rowIndex + colIndex)*3
+    mov     ecx, edx           ; ecx = (y + offsetY)
+    imul    ecx, r13d
+    add     ecx, eax           ; ecx = (y + offsetY)*width + (x + offsetX)
+    imul    ecx, 3             ; Przelicz na offset w bajtach (B,G,R)
+
+    ; Wczytanie danych piksela (32 bity) do xmm4
+    movd    xmm4, dword ptr [rbp + rcx]
+
+    ; Rozszerzenie wartoœci 8-bit -> 16-bit -> 32-bit
+    pxor    xmm5, xmm5
+    punpcklbw xmm4, xmm5       ; 8-bit -> 16-bit
+    punpcklwd xmm4, xmm5       ; 16-bit -> 32-bit
+
+    ; Konwersja na float i dodanie do akumulatora
+    cvtdq2ps xmm4, xmm4
+    addps   xmm0, xmm4
+
+skip_col:
+    add     r8d, 1
+    cmp     r8d, 1
+    jle     inner_3x3_loop
 
 skip_row:
-    ; Pomijanie wiersza, który jest poza granicami obrazu
-    nop
+    add     r15d, 1
+    cmp     r15d, 1
+    jle     outer_3x3_loop
+
+    ;---------------------------------------
+    ; Obliczenie œredniej przez pomno¿enie przez 0.11111111 (1/9)
+    ;---------------------------------------
+    mulps   xmm0, xmmword ptr [const_0_111]
+
+    ;---------------------------------------
+    ; Konwersja float -> int oraz saturacja wartoœci
+    ;---------------------------------------
+    cvttps2dq xmm1, xmm0       ; Konwersja na liczby ca³kowite
+    packusdw  xmm1, xmm1       ; Zmniejszenie do 16 bitów
+    packuswb  xmm1, xmm1       ; Zmniejszenie do 8 bitów
+
+    ; xmm1 zawiera teraz dwa piksele w dolnych 32 bitach (00RRGGBB)
+    movd    ebx, xmm1
+
+    ;---------------------------------------
+    ; Wyliczenie docelowego offsetu piksela (y*width + x)*3
+    ;---------------------------------------
+    mov     eax, r12d
+    imul    eax, r13d
+    add     eax, r14d
+    imul    eax, 3
+
+    ; Zapisanie przetworzonego piksela (4 bajty: B, G, R, X)
+    mov     dword ptr [rbp + rax], ebx
+
+    ; PrzejdŸ do kolejnej kolumny
+    inc     r14d
+    jmp     col_loop
 
 next_row:
-    inc     r13d
+    inc     r12d
     jmp     row_loop
 
 end_function:
+    ;-----------------------------------
     ; Przywrócenie rejestrów nieulotnych
+    ;-----------------------------------
     pop     r15
     pop     r14
     pop     r13
