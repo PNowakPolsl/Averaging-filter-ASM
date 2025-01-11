@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
-using System.Windows.Controls;
+using System.Windows.Shapes;
 
 namespace JAPROJ
 {
@@ -16,14 +16,11 @@ namespace JAPROJ
     {
         private BitmapSource loadedBitmap;
 
-        [DllImport("CPPDll.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern void AVGFILTER(IntPtr pixelData, IntPtr outputData, int width, int startY, int endY, int imageHeight);
-
         [DllImport("JADll.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern void ASM_AVGFILTER(IntPtr pixelData, IntPtr outputData, int width, int startY, int endY, int imageHeight);
+        public static extern void ASM_AVGFILTER(IntPtr pixelData, int width, int startY, int endY, int imageHeight);
 
-        private BitmapSource originalBitmap;
-        private BitmapSource filteredBitmap;
+        [DllImport("CPPDll.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern void AVGFILTER(IntPtr pixelData, int width, int startY, int endY, int imageHeight);
 
         public MainWindow()
         {
@@ -34,7 +31,8 @@ namespace JAPROJ
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp"
+                Filter = "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp",
+                Title = "Select an Image"
             };
 
             if (openFileDialog.ShowDialog() == true)
@@ -43,138 +41,179 @@ namespace JAPROJ
             }
         }
 
-        private void OnFilterClick(object sender, RoutedEventArgs e)
-        {
-            if (loadedBitmap == null)
-            {
-                MessageBox.Show("Proszę załadować obraz.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (int.TryParse((ThreadCount.SelectedItem as ComboBoxItem)?.Content.ToString(), out int numThreads) && numThreads > 0)
-            {
-                // Sprawdź, czy użytkownik wybrał ASM lub C++
-                string selectedLanguage = (LanguageSelection.SelectedItem as ComboBoxItem)?.Content.ToString();
-                if (string.IsNullOrEmpty(selectedLanguage))
-                {
-                    MessageBox.Show("Proszę wybrać język przetwarzania.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                ApplyFilter(numThreads, selectedLanguage);
-            }
-            else
-            {
-                MessageBox.Show("Proszę wybrać liczbę wątków.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ApplyFilter(int numThreads, string language)
-        {
-            int width = loadedBitmap.PixelWidth;
-            int height = loadedBitmap.PixelHeight;
-            int bytesPerPixel = 3; // RGB format
-            int stride = width * bytesPerPixel;
-
-            // Tworzenie WriteableBitmap dla wynikowego obrazu
-            WriteableBitmap filteredBitmap = new WriteableBitmap(loadedBitmap);
-
-            // Bufory dla pikseli wejściowych i wyjściowych
-            byte[] pixelData = new byte[stride * height];
-            byte[] outputData = new byte[stride * height];
-
-            // Kopiowanie pikseli do tablicy wejściowej
-            loadedBitmap.CopyPixels(pixelData, stride, 0);
-
-            // Przypięcie tablicy do pamięci
-            GCHandle pixelHandle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
-            GCHandle outputHandle = GCHandle.Alloc(outputData, GCHandleType.Pinned);
-
-            IntPtr pixelPtr = Marshal.UnsafeAddrOfPinnedArrayElement(pixelData, 0);
-            IntPtr outputPtr = Marshal.UnsafeAddrOfPinnedArrayElement(outputData, 0);
-
-            // Dzielimy obraz na segmenty w pionie
-            int segmentHeight = height / numThreads;
-            int extraRows = height % numThreads;
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            // Przetwarzanie obrazu w zależności od wybranego języka
-            Parallel.For(0, numThreads, i =>
-            {
-                int startY = i * segmentHeight;
-                int endY = startY + segmentHeight + (i == numThreads - 1 ? extraRows : 0);
-
-                if (language == "C++")
-                {
-                    AVGFILTER(pixelPtr, outputPtr, width, startY, endY, height);
-                }
-                else if (language == "ASM")
-                {
-                    ASM_AVGFILTER(pixelPtr, outputPtr, width, startY, endY, height);
-                }
-            });
-
-            stopwatch.Stop();
-
-            // Kopiowanie wyników do WriteableBitmap
-            filteredBitmap.Lock();
-            Marshal.Copy(outputData, 0, filteredBitmap.BackBuffer, outputData.Length);
-            filteredBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
-            filteredBitmap.Unlock();
-
-            // Zwolnienie pamięci
-            pixelHandle.Free();
-            outputHandle.Free();
-
-            // Ustawienie przefiltrowanego obrazu
-            FilteredImage.Source = filteredBitmap;
-
-            SaveFilteredImage(filteredBitmap);
-
-            MessageBox.Show($"Czas przetwarzania ({language}): {stopwatch.ElapsedMilliseconds} ms\nObraz zapisano do folderu Pobrane.",
-                            "Przetwarzanie zakończone", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void SaveFilteredImage(WriteableBitmap bitmap)
-        {
-            string downloadsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string fileName = Path.Combine(downloadsFolder, "FilteredImage.png");
-
-            try
-            {
-                using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                {
-                    PngBitmapEncoder encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                    encoder.Save(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Błąd podczas zapisywania obrazu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         private void SetImage(string filePath)
         {
             try
             {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(filePath, UriKind.Absolute);
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.UriSource = new Uri(filePath, UriKind.Absolute);
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
 
-                FormatConvertedBitmap formattedBitmap = new FormatConvertedBitmap(bitmap, PixelFormats.Rgb24, null, 0);
-                loadedBitmap = formattedBitmap;
+                FormatConvertedBitmap rgbBitmap = new FormatConvertedBitmap(bitmapImage, PixelFormats.Rgb24, null, 0);
+                loadedBitmap = rgbBitmap;
 
                 OriginalImage.Source = loadedBitmap;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd ładowania obrazu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private int[][] CalculateHistogram(BitmapSource bitmap)
+        {
+            int width = bitmap.PixelWidth;
+            int height = bitmap.PixelHeight;
+            int bytesPerPixel = 3;
+
+            int[][] histogram = new int[3][] { new int[256], new int[256], new int[256] };
+
+            byte[] pixelData = new byte[width * height * bytesPerPixel];
+            bitmap.CopyPixels(pixelData, width * bytesPerPixel, 0);
+
+            for (int i = 0; i < pixelData.Length; i += bytesPerPixel)
+            {
+                histogram[0][pixelData[i]]++;     // Blue channel
+                histogram[1][pixelData[i + 1]]++; // Green channel
+                histogram[2][pixelData[i + 2]]++; // Red channel
+            }
+
+            return histogram;
+        }
+
+        private void DrawHistogram(Canvas canvas, int[][] histogram)
+        {
+            canvas.Children.Clear();
+
+            int maxCount = Math.Max(histogram[0].Max(), Math.Max(histogram[1].Max(), histogram[2].Max()));
+
+            for (int i = 0; i < 256; i++)
+            {
+                double scale = canvas.Height / maxCount;
+
+                Rectangle blueRect = new Rectangle
+                {
+                    Width = 1,
+                    Height = histogram[0][i] * scale,
+                    Fill = Brushes.Blue
+                };
+                Canvas.SetLeft(blueRect, i);
+                Canvas.SetBottom(blueRect, 0);
+                canvas.Children.Add(blueRect);
+
+                Rectangle greenRect = new Rectangle
+                {
+                    Width = 1,
+                    Height = histogram[1][i] * scale,
+                    Fill = Brushes.Green
+                };
+                Canvas.SetLeft(greenRect, i);
+                Canvas.SetBottom(greenRect, 0);
+                canvas.Children.Add(greenRect);
+
+                Rectangle redRect = new Rectangle
+                {
+                    Width = 1,
+                    Height = histogram[2][i] * scale,
+                    Fill = Brushes.Red
+                };
+                Canvas.SetLeft(redRect, i);
+                Canvas.SetBottom(redRect, 0);
+                canvas.Children.Add(redRect);
+            }
+        }
+
+        private void OnFilterClick(object sender, RoutedEventArgs e)
+        {
+            if (loadedBitmap == null)
+            {
+                MessageBox.Show("Please load an image before filtering.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int[][] histogramBefore = CalculateHistogram(loadedBitmap);
+            DrawHistogram(HistogramBefore, histogramBefore);
+
+            if (ThreadCount.SelectedItem is ComboBoxItem threadItem &&
+                int.TryParse(threadItem.Content.ToString(), out int numThreads) &&
+                numThreads > 0)
+            {
+                ApplyFilter(numThreads);
+
+                WriteableBitmap filteredBitmap = (WriteableBitmap)FilteredImage.Source;
+                int[][] histogramAfter = CalculateHistogram(filteredBitmap);
+                DrawHistogram(HistogramAfter, histogramAfter);
+            }
+            else
+            {
+                MessageBox.Show("Please select a valid thread count.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void ApplyFilter(int numThreads)
+        {
+            int height = loadedBitmap.PixelHeight;
+            int width = loadedBitmap.PixelWidth;
+            int bytesPerPixel = 3;
+
+            WriteableBitmap filteredBitmap = new WriteableBitmap(loadedBitmap);
+
+            filteredBitmap.Lock();
+            try
+            {
+                int length = width * height * bytesPerPixel;
+                byte[] pixelData = new byte[length];
+                IntPtr pBackBuffer = filteredBitmap.BackBuffer;
+                Marshal.Copy(pBackBuffer, pixelData, 0, length);
+
+                GCHandle handle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
+                IntPtr pixelDataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(pixelData, 0);
+
+                int baseSegmentHeight = height / numThreads;
+                int extraRows = height % numThreads;
+
+                int[] startYs = new int[numThreads];
+                int[] endYs = new int[numThreads];
+
+                int currentStartY = 0;
+                for (int i = 0; i < numThreads; i++)
+                {
+                    int segmentHeight = baseSegmentHeight + (i < extraRows ? 1 : 0);
+                    startYs[i] = currentStartY;
+                    endYs[i] = currentStartY + segmentHeight;
+                    currentStartY += segmentHeight;
+                }
+
+                bool useCPP = LanguageSelection.SelectedItem is ComboBoxItem langItem && langItem.Content.ToString() == "C++";
+
+                Stopwatch stopwatch = Stopwatch.StartNew();
+
+                Parallel.For(0, numThreads, i =>
+                {
+                    if (useCPP)
+                    {
+                        AVGFILTER(pixelDataPtr, width, startYs[i], endYs[i], height);
+                    }
+                    else
+                    {
+                        ASM_AVGFILTER(pixelDataPtr, width, startYs[i], endYs[i], height);
+                    }
+                });
+
+                Marshal.Copy(pixelData, 0, pBackBuffer, length);
+                stopwatch.Stop();
+
+                MessageBox.Show($"Filtering completed in {stopwatch.Elapsed.TotalMilliseconds} ms", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                handle.Free();
+            }
+            finally
+            {
+                filteredBitmap.Unlock();
+            }
+
+            FilteredImage.Source = filteredBitmap;
         }
     }
 }

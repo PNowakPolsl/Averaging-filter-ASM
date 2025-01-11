@@ -5,38 +5,68 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JAPROJ"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="900">
     <Grid>
-        <!-- Define grid layout -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
+        <!-- Zdefiniuj rzędy:
+             Rząd 0: Obrazy (oryginalny i przefiltrowany),
+             Rząd 1: Histogramy (przed i po),
+             Rząd 2: Kontrolki -->
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <!-- Kolumny: lewy panel - oryginalny obraz, środkowy panel - histogramy, prawy panel - obraz filtrowany -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- Left panel: Image selection -->
+        <!-- Lewy panel: Oryginalny obraz -->
         <StackPanel Grid.Column="0" Grid.Row="0" Margin="10">
-            <Label Content="Original Image" FontWeight="Bold"/>
-            <Border BorderBrush="Black" BorderThickness="1" Height="200" Width="250" HorizontalAlignment="Center">
-                <Image Name="OriginalImage" Stretch="Uniform"/>
+            <Label Content="Original Image" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <Border BorderBrush="Black" BorderThickness="1" 
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Padding="2"  Margin="5">
+                <!-- Usunięto ustawianie Width/Height, aby ramka otaczała zawartość równomiernie -->
+                <Image Name="OriginalImage" Stretch="Uniform" 
+                       Width="250" Height="200" />
             </Border>
             <Button Content="Load Image" Width="100" HorizontalAlignment="Center" Margin="0,10,0,0" Click="OnLoadImageClick"/>
         </StackPanel>
 
-        <!-- Right panel: Filtered image -->
+        <!-- Prawy panel: Przefiltrowany obraz -->
         <StackPanel Grid.Column="2" Grid.Row="0" Margin="10">
-            <Label Content="Filtered Image" FontWeight="Bold"/>
-            <Border BorderBrush="Black" BorderThickness="1" Height="200" Width="250" HorizontalAlignment="Center">
-                <Image Name="FilteredImage" Stretch="Uniform"/>
+            <Label Content="Filtered Image" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <Border BorderBrush="Black" BorderThickness="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Padding="2" Margin="5">
+                <Image Name="FilteredImage" Stretch="Uniform" 
+                       Width="250" Height="200" />
             </Border>
         </StackPanel>
 
-        <!-- Bottom panel: Controls -->
-        <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <!-- Panel centralny: Histogramy przed i po filtracji -->
+        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <!-- Histogram przed filtracją -->
+            <StackPanel Grid.Column="0" Margin="5">
+                <Label Content="Histogram Before Filter" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <Canvas Name="HistogramBefore" Height="150" Background="LightGray"/>
+            </StackPanel>
+            <!-- Histogram po filtracji -->
+            <StackPanel Grid.Column="1" Margin="5">
+                <Label Content="Histogram After Filter" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <Canvas Name="HistogramAfter" Height="150" Background="LightGray"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Dolny panel: Kontrolki filtrowania -->
+        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Label Content="Language:" VerticalAlignment="Center" Margin="5"/>
             <ComboBox Name="LanguageSelection" Width="100" Margin="5">
                 <ComboBoxItem Content="ASM"/>
@@ -58,4 +88,3 @@
         </StackPanel>
     </Grid>
 </Window>
-
